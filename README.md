@@ -1,4 +1,4 @@
-This is the only colorscheme-generator you will ever need: Cubehelix are the best colormaps for published or distributed documents! Cubehelix is the most versatile colormap generator: suitable for grayscale conversion, or even maximally distinct colors.
+This is the only colorscheme-generator you will ever need for MATLAB: Cubehelix are the best colormaps for published or distributed documents! Cubehelix is the most versatile colormap generator: suitable for grayscale conversion, or even maximally distinct colors.
 
 This submission allows you to create different colormaps using just a few parameters. The standard Cubehelix algorithm offer very attractive colorschemes for online and electronic documents (e.g. PDF), and yet when printed in grayscale they keep exactly the sequence information of the original data. This submission also includes two extra controls over the range and domain of the Cubehelix scheme, giving a practically unlimited number of colormaps with many different styles: maximally distinct, multi or single hue, suitable for grayscale printing or even simple grayscale.
 
