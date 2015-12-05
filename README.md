@@ -1,12 +1,12 @@
-This is the only colorscheme-generator you will ever need: Cubehelix are the best colormaps for published or distributed documents!
+This is the only colorscheme-generator you will ever need: Cubehelix are the best colormaps for published or distributed documents! Cubehelix is the most versatile colormap generator: suitable for grayscale conversion, or even maximally distinct colors.
 
 This submission allows you to create different colormaps using just a few parameters. The standard Cubehelix algorithm offer very attractive colorschemes for online and electronic documents (e.g. PDF), and yet when printed in grayscale they keep exactly the sequence information of the original data. This submission also includes two extra controls over the range and domain of the Cubehelix scheme, giving a practically unlimited number of colormaps with many different styles: maximally distinct, multi or single hue, suitable for grayscale printing or even simple grayscale.
 
 This submission includes three functions for working with Cubehelix colormaps:
 
-* "cubehelix" returns a colormap created using Dave Green's Cubehelix colorscheme function. 
-* "cubehelix_view" creates a figure for creating Cubehelix colorschemes with real-time interactive adjustment of the scheme's parameter values, plus a 'random' demonstration mode and the ability to control other figures' or axes' colormaps.
-* "cubehelix_find" can be used to retrieve the parameters from an existing Cubehelix colormap, or to find the best Cubehelix colorscheme that matches any selection of colors (e.g. a document or corporate colorscheme).
+* "cubehelix.m" returns a colormap created using Dave Green's Cubehelix colorscheme function. 
+* "cubehelix_view.m" creates a figure for creating Cubehelix colorschemes with real-time interactive adjustment of the scheme's parameter values, plus a 'random' demonstration mode and the ability to control other figures' or axes' colormaps.
+* "cubehelix_find.m" can be used to retrieve the parameters from an existing Cubehelix colormap, or to find the best Cubehelix colorscheme that matches any selection of colors (e.g. a document or corporate colorscheme).
 
 ### Cubehelix ###
 
