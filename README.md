@@ -19,45 +19,45 @@ Note: The original specification (the links above) misnamed the saturation optio
 
 ### Examples ###
 
-% New colors for the "colormap" example: 
-load spine 
-image(X) 
-colormap(cubehelix)
-
-% New colors for the "surf" example: 
-[X,Y,Z] = peaks(30); 
-surfc(X,Y,Z) 
-colormap(cubehelix([],0.5,-1.5,1,1,[0.29,0.92])) 
-axis([-3,3,-3,3,-10,5])
+	% New colors for the "colormap" example: 
+	load spine 
+	image(X) 
+	colormap(cubehelix)
+	
+	% New colors for the "surf" example: 
+	[X,Y,Z] = peaks(30); 
+	surfc(X,Y,Z) 
+	colormap(cubehelix([],0.5,-1.5,1,1,[0.29,0.92])) 
+	axis([-3,3,-3,3,-10,5])
 
 ### Examples of Viewing Cubehelix Colormaps ###
 
-% Interactive colorscheme parameter viewer: 
-cubehelix_view 
-% Set/reset the viewer with new parameter values: 
-cubehelix_view([],0.5,-1.5,1,1)
-
-# Control external axes/figure colormaps:
-load spine
-image(X)
-cubehelix_view({gca})
+	% Interactive colorscheme parameter viewer: 
+	cubehelix_view 
+	% Set/reset the viewer with new parameter values: 
+	cubehelix_view([],0.5,-1.5,1,1)
+	
+	# Control external axes/figure colormaps:
+	load spine
+	image(X)
+	cubehelix_view({gca})
 
 ### Examples of Retrieving Colormap Parameters ###
 
-cubehelix_find(cubehelix(10))
- ans = [0.5,-1.5,1,1]
+	cubehelix_find(cubehelix(10))
+	 ans = [0.5,-1.5,1,1]
+	
+	map = cubehelix(10, 1.4,-0.7,0.9,1.2, [0.05,0.97]); 
+	[vec,irg,dmn] = cubehelix_find(map)
+	 vec = [1.4,-0.7,0.9,1.2]
+	 irg = [0.05,0.97]
+	 dmn = [0,1]
 
-map = cubehelix(10, 1.4,-0.7,0.9,1.2, [0.05,0.97]); 
-[vec,irg,dmn] = cubehelix_find(map)
- vec = [1.4,-0.7,0.9,1.2]
- irg = [0.05,0.97]
- dmn = [0,1]
-
-map = cubehelix(64, [2.3,0.4,0.5,0.6], [0.05,0.24], [0.19,0.85]);
-[vec,irg,dmn] = cubehelix_find(map)
- vec = [2.3,0.4,0.5,0.6]
- irg = [0.05,0.24]
- dmn = [0.19,0.85]
+	map = cubehelix(64, [2.3,0.4,0.5,0.6], [0.05,0.24], [0.19,0.85]);
+	[vec,irg,dmn] = cubehelix_find(map)
+	 vec = [2.3,0.4,0.5,0.6]
+	 irg = [0.05,0.24]
+	 dmn = [0.19,0.85]
  
  ### Note ###
 
