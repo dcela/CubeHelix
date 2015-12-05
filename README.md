@@ -12,7 +12,8 @@ This submission includes three functions for working with Cubehelix colormaps:
 
 Cubehelix colorschemes consist of nodes along a tapered helix in the RGB color cube, with a continuous increase in perceived intensity (e.g. black->white). Thus the scheme defines attractive colormaps with a huge choice of hue, saturation and brightness, and yet printing a figure (or image) in Black-and-White (e.g. postscript) results in a monotonically increasing grayscale that retains the brightness order of the original colormap. The sequence information of the colormap is retained even in grayscale, which means an attractive colored image can be printed in grayscale and still be informative to the end-user.
 
-The scheme is defined here: http://astron-soc.in/bulletin/11June/289392011.pdf 
+The scheme is defined here: http://astron-soc.in/bulletin/11June/289392011.pdf
+
 For more information and examples: http://www.mrao.cam.ac.uk/~dag/CUBEHELIX/
 
 Note: The original specification (the links above) misnamed the saturation option as "hue". In this submission the saturation option is named "sat".
@@ -58,8 +59,8 @@ Note: The original specification (the links above) misnamed the saturation optio
 	 vec = [2.3,0.4,0.5,0.6]
 	 irg = [0.05,0.24]
 	 dmn = [0.19,0.85]
- 
- ### Note ###
+
+### Note ###
 
 The following files are part of GitHub/git repository, and are not required for using this submission in MATLAB:
 * .gitattributes
