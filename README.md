@@ -4,9 +4,9 @@ This submission allows you to create different colormaps using just a few parame
 
 This submission includes three functions for working with Cubehelix colormaps:
 
-* "cubehelix.m" returns a colormap created using Dave Green's Cubehelix colorscheme function. 
-* "cubehelix_view.m" creates a figure for creating Cubehelix colorschemes with real-time interactive adjustment of the scheme's parameter values, plus a 'random' demonstration mode and the ability to control other figures' or axes' colormaps.
-* "cubehelix_find.m" can be used to retrieve the parameters from an existing Cubehelix colormap, or to find the best Cubehelix colorscheme that matches any selection of colors (e.g. a document or corporate colorscheme).
+* CUBEHELIX returns a colormap created using Dave Green's Cubehelix colorscheme function. 
+* CUBEHELIX_VIEW creates a figure for creating Cubehelix colorschemes with real-time interactive adjustment of the scheme's parameter values, plus a 'random' demonstration mode and the ability to control other figures' or axes' colormaps.
+* CUBEHELIX_FIND can be used to retrieve the parameters from an existing Cubehelix colormap, or to find the best Cubehelix colorscheme that matches any selection of colors (e.g. a document or corporate colorscheme).
 
 ### Cubehelix ###
 
