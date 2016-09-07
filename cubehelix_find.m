@@ -1,12 +1,12 @@
 function [params,irange,domain,resnorm] = cubehelix_find(map,posn,prms)
-% Return parameter values for the Cubehelix colorscheme that matches the input colormap.
+% Return parameter values for the Cubehelix color scheme that matches the input colormap.
 %
-% (c) 2015 Stephen Cobeldick
+% (c) 2016 Stephen Cobeldick
 %
 % So you have a nice Cubehelix colormap but you can't remember the exact
 % parameter values that were used to define it, or perhaps you want to match
-% a Cubehelix scheme to your document's chosen colorscheme: this function can
-% help! An optimization routine finds the Cubehelix colorscheme that best matches
+% a Cubehelix scheme to your document's chosen color scheme: this function can
+% help! An optimization routine finds the Cubehelix color scheme that best matches
 % the input RGB colormap, and returns its parameter values (takes a few seconds).
 %
 % Syntax:
@@ -14,13 +14,13 @@ function [params,irange,domain,resnorm] = cubehelix_find(map,posn,prms)
 %  [params,irange,domain] = cubehelix_find(map,posn)
 %  [params,irange,domain] = cubehelix_find(map,posn,prms)
 %
-% Note1: Requires the Optimization Toolbox function "lsqnonlin".
+% Note1: Requires the Optimization Toolbox function LSQNONLIN.
 % Note2: The parameter <start> is modulus three, i.e. 3==0.
 % Note3: The search bounds are lb=[0,-20,0,0,0,0,0,0] and ub=[3,+20,3,3,1,1,1,1];
 %
 % See also CUBEHELIX BREWERMAP RGBPLOT COLORMAP LSQNONLIN OPTIMSET
 %
-% ### Matching a Colorscheme ###
+%% Matching a Colorscheme %%
 %
 % The basic syntax assumes that the input colormap is a Cubehelix colormap:
 %  [params,irange,domain] = cubehelix_find(map) % map = cubehelix(...)
@@ -35,7 +35,7 @@ function [params,irange,domain,resnorm] = cubehelix_find(map,posn,prms)
 % [params,irange,domain] = cubehelix_find(map,posn);
 % cubehelix_view(5,params,irange,domain)
 %
-% ### Holding Parameter Values Constant ###
+%% Holding Parameter Values Constant %%
 %
 % In some situations it may be desirable to force some parameter values to
 % stay constant. The third (optional) input can be used to specify any of
@@ -45,7 +45,7 @@ function [params,irange,domain,resnorm] = cubehelix_find(map,posn,prms)
 % [params,irange,domain] = cubehelix_find(map,posn,prms);
 % cubehelix_view(5,params,irange,domain)
 %
-% ### Examples ###
+%% Examples %%
 %
 % cubehelix_find(cubehelix(10))
 %  ans = [0.5,-1.5,1,1]
@@ -62,21 +62,21 @@ function [params,irange,domain,resnorm] = cubehelix_find(map,posn,prms)
 %  irange = [0.05,0.24]
 %  domain = [0.19,0.85]
 %
-% ### Input and Output Arguments ###
+%% Input and Output Arguments %%
 %
-% Inputs (*=default):
+%%% Inputs (*=default):
 %  map  = NumericMatrix, an RGB colormap to be matched to a Cubehelix colorscheme.
 %  posn = NumericVector, the relative positions of the nodes in <map>. Size 1xrows(map).
-%  prms = NumericVector, vector of Cubehelix parameters to keep constant. Size 1x8.
-%         parameters=[start,rots,sat,gamma,irange,domain], NaN indicates non-constant values.
-% Outputs:
+%  prms = NumericVector, vector of Cubehelix parameters to keep constant:
+%         =[start,rots,sat,gamma,irange,domain]. NaN indicates non-constant values.
+%%% Outputs:
 %  params = NumericVector, the Cubehelix parameters derived from <map>: [start,rots,sat,gamma].
 %  irange = NumericVector, range of brightness levels of the scheme's endnodes. Size 1x2.
 %  domain = NumericVector, domain of the cubehelix calculation (endnode positions). Size 1x2.
 %
 % [params,irange,domain] = cubehelix_find(map,*posn,*prms)
 
-% ### Input Wrangling ###
+%% Input Wrangling %%
 %
 ism = @(x)all(0<=x(:))&&all(x(:)<=1);
 isn = @(x,n)isnumeric(x)&&isreal(x);
@@ -106,7 +106,7 @@ else
 	X = @(p)p;
 end
 %
-% ### "lsqnonlin" Parameter Bounds ###
+%% LSQNONLIN Parameter Bounds %%
 %
 if R>2 % default algorithm cannot solve <3 colormap rows
 	lb = X([0,-20,0,0,0,0,0,0]);
@@ -118,7 +118,7 @@ else % no bounds allowed for this algorithm
 	opt = optimset('Display','off', 'Algorithm','levenberg-marquardt');
 end
 %
-% ### Indexing for Sample Colors ###
+%% Indexing for Sample Colors %%
 %
 if nargin>1 && ~isempty(posn) % sampled colors
 	assert(isn(posn)&&isvector(posn)&&ism(posn)&&numel(posn)==R,...
@@ -132,7 +132,7 @@ else % complete Cubehelix colormap
 	E = @(m)m;
 end
 %
-% ### Define Solver Function ###
+%% Define Solver Function %%
 %
 G = @(p)map-E(cubehelix(P,p(1:4),p(5:6),p(7:8)));
 if nargin>2
@@ -141,7 +141,7 @@ else
 	F = @(p)G(real(p));
 end
 %
-% ### Find Optimum ###
+%% Find Optimum %%
 %
 % Estimate rotations from the number of peaks&troughs:
 D = diff(bsxfun(@minus,map,mag),1,1);
@@ -172,14 +172,14 @@ params(1) = mod(params(1),3);
 resnorm = resnorm / R;
 %
 end
-%----------------------------------------------------------------------END:cubehelix_find
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%cubehelix_find
 function q = chfSubs(p,v,idx)
 % Zip together constant and non-constant parameter value vectors.
 q(idx) = p;
 q(~idx) = v(~idx);
 end
-%----------------------------------------------------------------------END:chfSubs
-% Copyright (c) 2015 Stephen Cobeldick
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%chfSubs
+% Copyright (c) 2016 Stephen Cobeldick
 %
 % Licensed under the Apache License, Version 2.0 (the "License");
 % you may not use this file except in compliance with the License.
@@ -191,4 +191,4 @@ end
 % distributed under the License is distributed on an "AS IS" BASIS,
 % WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 % See the License for the specific language governing permissions and limitations under the License.
-%----------------------------------------------------------------------END:license
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%license
