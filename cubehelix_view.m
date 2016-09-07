@@ -1,7 +1,7 @@
 function [map,prm] = cubehelix_view(N,start,rots,sat,gamma,irange,domain)
 % An interactive figure for Cubehelix colormap parameter selection. With demo!
 %
-% (c) 2015 Stephen Cobeldick
+% (c) 2016 Stephen Cobeldick
 %
 % View Dave Green's Cubehelix colorschemes in a figure.
 %
@@ -31,20 +31,21 @@ function [map,prm] = cubehelix_view(N,start,rots,sat,gamma,irange,domain)
 %
 % See also CUBEHELIX BREWERMAP RGBPLOT COLORMAP COLORMAPEDITOR COLORBAR UICONTROL ADDLISTENER
 %
-% ### Adjust External Colormaps ###
+%% Adjust External Colormaps %%
 %
-% % Example:
+%%% Example:
+%
 % load spine
 % image(X)
 % cubehelix_view({gca})
 %
 % Very useful! Simply provide a cell array of axes or figure handles when
-% calling this function, and their colormaps will be updated in real-time.
-% Note that MATLAB versions <=2010 only support axes handles for this option.
+% calling this function, and their colormaps will be updated in real-time:
+% note that MATLAB versions <=2010 only support axes handles for this!
 %
-% ### Input and Output Arguments ###
+%% Input and Output Arguments %%
 %
-% Input Arguments (*==default):
+%%% Inputs (*==default):
 %  N     = NumericScalar, an integer to define the colormap length.
 %        = *[], colormap length of one hundred and twenty-eight (128).
 %        = {axes/figure handles}, their colormaps will be updated by this function.
@@ -55,7 +56,7 @@ function [map,prm] = cubehelix_view(N,start,rots,sat,gamma,irange,domain)
 %  irange = NumericVector, range of brightness levels of the colormap's endnodes. Size 1x2.
 %  domain = NumericVector, domain of the cubehelix calculation (endnode positions). Size 1x2.
 %
-% Output Arguments (block execution until the figure is deleted!):
+%%% Outputs (these block execution until the figure is deleted!):
 %  map = NumericMatrix, the cubehelix colormap defined when the figure is closed.
 %  prm = NumericVector, the parameters of <map>: [start,rots,sat,gamma,irange,domain].
 %
@@ -63,70 +64,212 @@ function [map,prm] = cubehelix_view(N,start,rots,sat,gamma,irange,domain)
 % OR
 % [map,prm] = cubehelix_view(N, [start,rots,sat,gamma], *irange, *domain)
 
-% ### Input Wrangling ###
+%% Input Wrangling %%
 %
+persistent H
+%
+xtH = {};
+% Parse colormap size:
 if nargin==0 || isnumeric(N)&&isempty(N)
 	N = 128;
 elseif iscell(N)&&numel(N)
 	tmp = all(1==cellfun('prodofsize',N)&cellfun(@ishghandle,N));
-	assert(tmp,'Input <N> may be a cell array of axes or figure handles.')
+	assert(tmp,'Input <N> may be a cell array of scalar axes or figure handles.')
+	xtH = N;
+	N = size(colormap(xtH{1}),1);
 else
 	assert(isnumeric(N)&&isscalar(N),'Input <N> must be a scalar numeric.')
 	assert(isreal(N)&&fix(N)==N&&N>0,'Input <N> must be positive real integer: %g+%gi',N,imag(N))
 	N = double(N);
 end
 %
-% Random Cubehelix parameters based on the current time:
+% Cubehelix parameters based on the current time (pseudo-random):
 T = sum(clock*100);
 foo = @(n)min(3,max(0,sqrt(-log(rem(T/pow2(n),1))*2)));
 bar = @(n)min(3,max(0,rem(T/pow2(n),1)^36));
-dfa(5:8,1) = [bar(3);1-bar(2);bar(1);1-bar(0)]; % irange and domain
-dfa(3:4,1) = [foo(5);foo(4)]; % sat and gamma
-dfa(2,1) = min(3,max(-3,log10(rem(T,1)/(1-rem(T,1))))); % rots
-dfa(1,1) = rem(T,3); % start
+prm(5:8,1) = [bar(3);1-bar(2);bar(1);1-bar(0)]; % irange and domain
+prm(3:4,1) = [foo(5);foo(4)]; % sat and gamma
+prm(2,1) = min(3,max(-3,log10(rem(T,1)/(1-rem(T,1))))); % rots
+prm(1,1) = rem(T,3); % start
 %
+% Cubehelix parameters consisting of fixed values (original "default"):
 %      [sta; rots; sat; gam; yrng; domn]
-%dfa = [0.5; -1.5;   1;   1; 0; 1; 0; 1];
+%prm = [0.5; -1.5;   1;   1; 0; 1; 0; 1];
 %
 stp = '%s input can be a vector of the four Cubehelix parameters.';
 str = '%s input can be a vector of the endnode brightness levels (range).';
 std = '%s input can be a vector of the endnode relative positions (domain).';
 %
 switch nargin
-	case {0,1}
-		[~,~,h] = chvUpDt(N, dfa(1:8));
 	case 2
 		start = chvChk(4,start,stp,'Second');
-		[~,~,h] = chvUpDt(N, [start;dfa(5:8)]);
+		prm(1:4) = start;
 	case 3
 		start = chvChk(4,start,stp,'Second');
 		rots  = chvChk(2,rots, str,'Third');
-		[~,~,h] = chvUpDt(N, [start;rots;dfa(7:8)]);
+		prm(1:6) = [start;rots];
 	case 4
 		start = chvChk(4,start,stp,'Second');
 		rots  = chvChk(2,rots, str,'Third');
 		sat   = chvChk(2,sat,  std,'Fourth');
-		[~,~,h] = chvUpDt(N, [start;rots;sat]);
+		prm(1:8) = [start;rots;sat];
 	case 5
-		[~,~,h] = chvUpDt(N, [chvC2V(start,rots,sat,gamma);dfa(5:8)]);
+		prm(1:4) = chvC2V(start,rots,sat,gamma);
 	case 6
 		irange = chvChk(2,irange,str,'Sixth');
-		[~,~,h] = chvUpDt(N, [chvC2V(start,rots,sat,gamma);irange;dfa(7:8)]);
+		prm(1:6) = [chvC2V(start,rots,sat,gamma);irange];
 	case 7
 		irange = chvChk(2,irange,str,'Sixth');
 		domain = chvChk(2,domain,std,'Seventh');
-		[~,~,h] = chvUpDt(N, [chvC2V(start,rots,sat,gamma);irange;domain]);
-	otherwise
-		error('Wrong number of inputs. Enter parameters individually or in a vector.')
+		prm(1:8) = [chvC2V(start,rots,sat,gamma);irange;domain];
 end
+%
+%% Create Figure %%
+%
+% LHS and RHS slider bounds/limits, and slider step sizes:
+lbd = [  1, 0,-3, 0, 0, 0, 0, 0, 0].';
+rbd = [128, 3, 3, 3, 3, 1, 1, 1, 1].';
+stp = [  1,[5, 5, 5, 5, 1, 1, 1, 1]/100;... % minor
+        10,[5, 5, 5, 5, 1, 1, 1, 1]/10].';  % major
+%       [N,st,ro,sa,ga,i1,i2,d1,d2]
+%
+% Define the 3D cube axis order:
+xyz = 'RGB';
+[~,xyz] = ismember(xyz,'RGB');
+%
+if isempty(H) || ~ishghandle(H.fig)
+	% Create a new figure:
+	ClBk = struct(...
+		'chv2D3D',@chv2D3D, 'chvDemo',@chvDemo, 'chvSldr',@chvSldr);
+	H = chvPlot(N,prm, stp, lbd, rbd, xyz, ClBk);
+end
+%
+chvUpDt()
 %
 if nargout
-	waitfor(h);
-	[~,prm,map] = chvUpDt();
+	waitfor(H.fig);
+else
+	clear map
 end
 %
+%% Nested Functions %%
+%
+	function chvUpDt()
+		% Update all graphics objects.
+		%
+		% Get Cubehelix colormap and grayscale equivalent:
+		[map,lo,hi] = cubehelix(N, prm(1:4),prm(5:6),prm(7:8));
+		mag = sum(map*[0.298936;0.587043;0.114021],2);
+		%
+		% Update colorbar values:
+		set(H.cbAx, 'YLim',[0,abs(N)+(N==0)]+0.5);
+		set(H.cbIm(1), 'CData',permute(map,[1,3,2]))
+		set(H.cbIm(2), 'CData', repmat(mag,[1,1,3]))
+		%
+		% Update 2D line / 3D patch values:
+		if  get(H.D2D3,'Value')
+			set(H.ln2D, 'XData',linspace(0,1,abs(N)));
+			set(H.ln2D, {'YData'},num2cell([map,mag],1).');
+		else
+			set(H.pt3D,...
+				'XData',map(:,xyz(1)),...
+				'YData',map(:,xyz(2)),...
+				'ZData',map(:,xyz(3)), 'FaceVertexCData',map)
+		end
+		%
+		% Update warning text:
+		mad = diff(mag);
+		wrn = {'Not Monotonic';'Clipped'};
+		set(H.warn,'String',wrn([any(mad<=0)&&any(0<=mad);any(lo(:))||any(hi(:))]));
+		%
+		% Update parameter value text:
+		set(H.vTxt(1), 'String',sprintf('%.0f',N));
+		set(H.vTxt(2:end), {'String'},sprintfc('%.2f',prm));
+		%
+		% Update external axes/figure:
+		for k = find(cellfun(@ishghandle,xtH))
+			colormap(xtH{k},map);
+		end
+	end
+%
+	function chv2D3D(h,~)
+		% Switch between 2D-line and 3D-cube.
+		%
+		if get(h,'Value') % 2D
+			set(H.ax3D, 'HitTest','off', 'Visible','off')
+			set(H.ax2D, 'HitTest','on')
+			set(H.pt3D, 'Visible','off')
+			set(H.ln2D, 'Visible','on')
+		else % 3D
+			set(H.ax2D, 'HitTest','off')
+			set(H.ax3D, 'HitTest','on', 'Visible','on')
+			set(H.ln2D, 'Visible','off')
+			set(H.pt3D, 'Visible','on')
+		end
+		%
+		chvUpDt();
+	end
+%
+	function chvSldr(m)
+		% Get new slider value.
+		%
+		new = get(H.vSld(m),'Value');
+		if m==1
+			N = new;
+		else
+			prm(m-1) = new;
+		end
+		%
+		chvUpDt()
+	end
+%
+	function chvDemo(h,~)
+		% Display random CubeHelix schemes.
+		%
+		% Parameter value step length:
+		pvs = 0.03;
+		% Functions to randomly specify new parameter values:
+		randfn(7:8) = {@()rand(1,1).^42,@()1-rand(1,1).^42};
+		randfn(3:4) = {@()sqrt(-log(rand(1,1))*2)};
+		randfn(1:2) = {@()3*rand(1,1),@()randn(1,1)};
+		randfn(5:6) = randfn(7:8);
+		%
+		gol = prm;
+		G = N;
+		%
+		while ishghandle(h)&&get(h,'Value')
+			%
+			% create new goal:
+			nwg = abs(gol-prm)<1e-4;
+			gol(nwg) = round(100*cellfun(@(fn)fn(),randfn(nwg)))/100;
+			% move to goal:
+			nxg = abs(gol-prm)<=pvs;
+			prm(nxg) = gol(nxg);
+			% on the way to goal
+			mvp = ~(nwg|nxg);
+			prm(mvp) = prm(mvp) + pvs*sign(gol(mvp)-prm(mvp));
+			%
+			if N==G % create new goal
+				G = randi(128);
+			elseif abs(N-G)<=1 % move to goal
+				N = G;
+			else % on the way to goal
+				N = N + sign(G-N);
+			end
+			%
+			% Update slider position:
+	 		set(H.vSld, {'Value'},num2cell(max(lbd,min(rbd,[N;prm]))));
+			%
+			chvUpDt();
+			%
+			% Faster/slower:
+			pause(0.12);
+		end
+		%
+	end
+%
 end
-%----------------------------------------------------------------------END:cubehelix_view
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%cubehelix_view
 function V = chvC2V(varargin)
 % Check that all of the input variables are real scalar numerics.
 str = 'Input Cubehelix parameters must be %s values.';
@@ -136,104 +279,15 @@ assert(all(cellfun(@isfinite,varargin)),str,'finite')
 assert(all(cellfun(@isreal,varargin)),str,'real')
 V = cellfun(@double,varargin(:));
 end
-%----------------------------------------------------------------------END:chvC2V
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%chvC2V
 function x = chvChk(n,x,msg,ord)
 % Check that the input variable <x> is real numeric vector with <n> elements.
 assert(isnumeric(x)&&isreal(x)&&all(isfinite(x))&&isvector(x)&&numel(x)==n,msg,ord)
 x = double(x(:));
 end
-%----------------------------------------------------------------------END:chvChk
-function [N,V,ghnd] = chvUpDt(N,V)
-% Draw a new figure or update an existing figure. Callback for sliders & demo.
-%
-persistent H prvV prvN extH
-%
-% LHS and RHS slider bounds/limits, and slider step sizes:
-lbd = [  1, 0,-3, 0, 0, 0, 0, 0, 0].';
-rbd = [128, 3, 3, 3, 3, 1, 1, 1, 1].';
-stp = [  1,[5, 5, 5, 5, 1, 1, 1, 1]/100;... % minor
-        10,[5, 5, 5, 5, 1, 1, 1, 1]/10].';  % major
-%       [N,st,ro,sa,ga,i1,i2,d1,d2]
-%
-switch nargin
-	case 0 % Demo initialize OR return colormap
-		N = prvN;
-		V = prvV;
-		if nargout==3 % Return colormap
-			ghnd = cubehelix(N, V(1:4), V(5:6), V(7:8));
-			return
-		end
-	case 1 % Slider callback
-		if get(H.demo,'Value') % Demo
-			return
-		elseif N % cubehelix parameters
-			V = prvV;
-			V(N) = get(H.vSld(N+1),'Value');
-			N = prvN;
-		else % parameter N only
-			V = prvV;
-			N = round(get(H.vSld(1),'Value'));
-		end
-	case 2 % Demo update OR function call
-		if iscell(N) % External axes/figure
-			extH = N;
-			N = size(colormap(extH{1}),1);
-		end
-		if isempty(H) || ~ishghandle(H.fig)
-			if nargout<3 % Demo
-				return
-			end
-			% Create a new figure:
-			H = chvPlot(lbd,rbd,stp,[N;V]);
-		else % Update slider positions:
-			set(H.vSld, {'Value'},num2cell(max(lbd,min(rbd,[N;V]))));
-		end
-		%
-	otherwise
-		error('How did this happen? This should not be possible.')
-end
-%
-prvN = N;
-prvV = V;
-ghnd = H.fig;
-%
-% Update parameter value text:
-set(H.vTxt(1), 'String',sprintf('%.0f',N));
-set(H.vTxt(2:end), {'String'},sprintfc('%.2f',V));
-%
-% Get Cubehelix colormap and grayscale equivalent:
-[map,lo,hi]  = cubehelix(N, V(1:4), V(5:6), V(7:8));
-mag = sum(map*[0.298936;0.587043;0.114021],2);
-%
-% Update colorbar values:
-set(H.cbAx, 'YLim',[0,abs(N)+(N==0)]+0.5);
-set(H.cbIm(1), 'CData',reshape(map,[],1,3))
-set(H.cbIm(2), 'CData',repmat(mag,[1,1,3]))
-%
-% Update 2D line / 3D patch values:
-if get(H.D2D3,'Value')
-	set(H.ln2D, 'XData',linspace(0,1,abs(N)));
-	set(H.ln2D, {'YData'},num2cell([map,mag],1).');
-else
-	set(H.pt3D, 'XData',map(:,1), 'YData',map(:,2), 'ZData',map(:,3), 'FaceVertexCData',map)
-end
-%
-% Update warning text:
-mad = diff(mag);
-str = {'Not Monotonic';'Clipped'};
-set(H.warn,'String',str([any(mad<=0)&&any(0<=mad);any(lo(:))||any(hi(:))]));
-%
-% Update external axes/figure:
-if ~isempty(extH)
-	for k = find(cellfun(@ishghandle,extH))
-		colormap(extH{k},map);
-	end
-end
-%
-end
-%----------------------------------------------------------------------END:chvUpDt
-function H = chvPlot(lbd,rbd,stp,V)
-% Draw a new figure with RGBplot axes, ColorBar axes, and uicontrol sliders.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%chvChk
+function H = chvPlot(N,prm, stp, lbd, rbd, xyz, ClBk)
+% Draw a new figure with RGBplot axes, colorbar axes, and uicontrol sliders.
 %
 % Parameter names for each slider:
 names = {'N';'start';'rotations';'saturation';'gamma';'irange(1)';'irange(2)';'domain(1)';'domain(2)'};
@@ -266,9 +320,10 @@ H.pt3D = patch('Parent',H.ax3D, 'XData',[0;1], 'YData',[0;1], 'ZData',[0;1],...
 	'Marker','o', 'MarkerFaceColor','flat', 'MarkerSize',10, 'FaceVertexCData',[1,1,0;1,0,1]);
 view(H.ax3D,3);
 grid(H.ax3D,'on')
-xlabel(H.ax3D,'Red')
-ylabel(H.ax3D,'Green')
-zlabel(H.ax3D,'Blue')
+lbl = {'Red','Green','Blue'};
+xlabel(H.ax3D,lbl{xyz(1)})
+ylabel(H.ax3D,lbl{xyz(2)})
+zlabel(H.ax3D,lbl{xyz(3)})
 %
 % Add warning text:
 H.warn = text('Parent',H.ax2D, 'Units','normalized', 'Position',[0,1],...
@@ -277,11 +332,11 @@ H.warn = text('Parent',H.ax2D, 'Units','normalized', 'Position',[0,1],...
 % Add demo button:
 H.demo = uicontrol(H.fig, 'Style','togglebutton', 'Units','normalized',...
 	'Position',[axw-btw+gap,uih+gap+0*bth,btw,bth], 'String','Demo',...
-	'Max',1, 'Min',0, 'Callback',@chvDemo);
+	'Max',1, 'Min',0, 'Callback',ClBk.chvDemo);
 % Add 2D/3D button:
 H.D2D3 = uicontrol(H.fig, 'Style','togglebutton', 'Units','normalized',...
 	'Position',[axw-btw+gap,uih+gap+1*bth,btw,bth], 'String','2D / 3D',...
-	'Max',1, 'Min',0, 'Callback',@(h,~)chv2D3D(H,h));
+	'Max',1, 'Min',0, 'Callback',ClBk.chv2D3D);
 %
 % Add colorbars:
 C = reshape([1,1,1],1,[],3);
@@ -293,11 +348,8 @@ H.cbIm(2) = image('Parent',H.cbAx(2), 'CData',C);
 H.cbIm(1) = image('Parent',H.cbAx(1), 'CData',C);
 %
 % Add parameter sliders, listeners, and corresponding text:
-V = max(lbd,min(rbd,V));
-H.vLab(M) = 0;
-H.vTxt(M) = 0;
-H.vSld(M) = 0;
-for m = 1:M
+sv = max(lbd,min(rbd,[N;prm]));
+for m = M:-1:1
 	Y = gap+(M-m)*(slh+gap);
 	H.vLab(m) = uicontrol(H.fig,'Style','text', 'Units','normalized',...
 		'Position',[gap,Y,btw,slh], 'String',names{m});
@@ -305,77 +357,14 @@ for m = 1:M
 		'Position',[gap+btw,Y,btw,slh], 'String','X');
 	H.vSld(m) = uicontrol(H.fig,'Style','slider', 'Units','normalized',...
 		'Position',[2*btw+gap,Y,axw-2*btw,slh], 'Min',lbd(m), 'Max',rbd(m),...
-		'SliderStep',stp(m,:)/(rbd(m)-lbd(m)), 'Value',V(m));
-	addlistener(H.vSld(m), 'Value', 'PostSet',@(a,b)chvUpDt(m-1));
+		'SliderStep',stp(m,:)/(rbd(m)-lbd(m)), 'Value',sv(m));
+	addlistener(H.vSld(m), 'Value', 'PostSet',@(~,~)ClBk.chvSldr(m));
 end
 %
 end
-%----------------------------------------------------------------------END:chvPlot
-function chv2D3D(H,tgh)
-% Switch between 2D-line and 3D-cube: swap visibility and hittest, then update.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%chvPlot
 %
-if get(tgh,'Value')% 2D
-	set(H.ax3D, 'HitTest','off', 'Visible','off')
-	set(H.ax2D, 'HitTest','on')
-	set(H.pt3D, 'Visible','off')
-	set(H.ln2D, 'Visible','on')
-else % 3D
-	set(H.ax2D, 'HitTest','off')
-	set(H.ax3D, 'HitTest','on', 'Visible','on')
-	set(H.ln2D, 'Visible','off')
-	set(H.pt3D, 'Visible','on')
-end
-chvUpDt();
-%
-end
-%----------------------------------------------------------------------END:chv2D3D
-function chvDemo(tgh,~)
-% While the toggle button is depressed run a loop showing random Cubehelix schemes.
-%
-% Initial values and goal values:
-[N,V] = chvUpDt();
-Ng = N;
-Vg = V;
-%
-% Step length between updates:
-stpL = 0.03;
-%
-% Functions to randomly find new values:
-randfn(7:8) = {@()rand(1,1).^42,@()1-rand(1,1).^42};
-randfn(3:4) = {@()sqrt(-log(rand(1,1))*2)};
-randfn(1:2) = {@()3*rand(1,1),@()randn(1,1)};
-randfn(5:6) = randfn(7:8);
-%
-% While the toggle button is down, step values:
-while ishghandle(tgh)&&get(tgh,'Value')
-	%
-	isnw = V==Vg; % create new goal
-	Vg(isnw) = round(100*cellfun(@(fn)fn(),randfn(isnw)))/100;
-	%
-	isnx = abs(Vg-V)<=stpL; % close to goal
-	V(isnx) = Vg(isnx);
-	%
-	isgo = ~(isnw|isnx); % on its way to goal
-	V(isgo) = V(isgo) + stpL*sign(Vg(isgo)-V(isgo));
-	%
-	if N==Ng % new goal
-		Ng = randi(128);
-	elseif abs(N-Ng)<=1 % close to goal
-		N = Ng;
-	else % on its way to goal
-		N = N + sign(Ng-N);
-	end
-	%
-	% Update figure:
-	[N,V] = chvUpDt(N,V);
-	%
-	% Frame-rate faster/slower:
-	pause(0.09);
-end
-%
-end
-%----------------------------------------------------------------------END:chvDemo
-% Copyright (c) 2015 Stephen Cobeldick
+% Copyright (c) 2016 Stephen Cobeldick
 %
 % Licensed under the Apache License, Version 2.0 (the "License");
 % you may not use this file except in compliance with the License.
@@ -387,4 +376,4 @@ end
 % distributed under the License is distributed on an "AS IS" BASIS,
 % WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 % See the License for the specific language governing permissions and limitations under the License.
-%----------------------------------------------------------------------END:license
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%license
