@@ -1,9 +1,9 @@
 function [map,lo,hi] = cubehelix(N,start,rots,sat,gamma,irange,domain)
 % Generate an RGB colormap of Dave Green's Cubehelix colorscheme. With range and domain control.
 %
-% (c) 2015 Stephen Cobeldick
+% (c) 2016 Stephen Cobeldick
 %
-% ### Function ###
+%% Function %%
 %
 % Returns a colormap with colors defined by Dave Green's Cubehelix colorscheme.
 % The colormap nodes are selected along a tapered helix in the RGB color cube,
@@ -33,7 +33,7 @@ function [map,lo,hi] = cubehelix(N,start,rots,sat,gamma,irange,domain)
 %
 % See also BREWERMAP RGBPLOT COLORMAP COLORBAR SURF CONTOURF IMAGE CONTOURCMAP JET LBMAP
 %
-% ### Range and Domain ###
+%% Range and Domain %%
 %
 % Using the default <irange> and <domain> vector ([0,1]) creates colormaps
 % exactly the same as Dave Green's original algorithm: from black to white.
@@ -54,22 +54,22 @@ function [map,lo,hi] = cubehelix(N,start,rots,sat,gamma,irange,domain)
 %
 % The function "colormap_view" demonstrates the effects of these options.
 %
-% ### Examples ###
+%% Examples %%
 %
-% % New colors for the "colormap" example:
+%%% New colors for the COLORMAP example:
 % load spine
 % image(X)
 % colormap(cubehelix)
 %
-% % New colors for the "surf" example:
+%%% New colors for the SURF example:
 % [X,Y,Z] = peaks(30);
 % surfc(X,Y,Z)
 % colormap(cubehelix([],0.7,-0.7,2,1,[0.2,0.8],[0.4,0.8]))
 % axis([-3,3,-3,3,-10,5])
 %
-% ### Input and Output Arguments ###
+%% Input and Output Arguments %%
 %
-% Inputs (*=default):
+%%% Inputs (*=default):
 %  N     = NumericScalar, an integer to define the colormap length.
 %        = *[], uses the length of the current figure's colormap.
 %  start = NumericScalar, *0.5, the helix's start color (modulus 3): R=1, G=2, B=3.
@@ -79,7 +79,7 @@ function [map,lo,hi] = cubehelix(N,start,rots,sat,gamma,irange,domain)
 %  irange = NumericVector, *[0,1], range of brightness levels of the scheme's endnodes. Size 1x2.
 %  domain = NumericVector, *[0,1], domain of the Cubehelix calculation (endnode positions). Size 1x2.
 %
-% Outputs:
+%%% Outputs:
 %  map = NumericMatrix, a colormap of RGB values between 0 and 1. Size Nx3
 %  lo  = LogicalMatrix, true where <map> values<0 were clipped to 0. Size Nx3
 %  hi  = LogicalMatrix, true where <map> values>1 were clipped to 1. Size Nx3
@@ -88,7 +88,7 @@ function [map,lo,hi] = cubehelix(N,start,rots,sat,gamma,irange,domain)
 % OR
 % [map,lo,hi] = cubehelix(N, [start,rots,sat,gamma], irange, domain)
 
-% ### Input Wrangling ###
+%% Input Wrangling %%
 %
 if nargin==0 || (isnumeric(N)&&isempty(N))
 	N = size(get(gcf,'colormap'),1);
@@ -151,7 +151,7 @@ else
 	domain = double(domain);
 end
 %
-% ### Core Function ###
+%% Core Function %%
 %
 vec = linspace(domain(1),domain(2),abs(N)).';
 ang = 2*pi * (start/3+1+rots*vec);
@@ -175,8 +175,8 @@ hi = map>1;
 map = max(0,min(1,map));
 %
 end
-%----------------------------------------------------------------------END:cubehelix
-% Copyright (c) 2015 Stephen Cobeldick
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%cubehelix
+% Copyright (c) 2016 Stephen Cobeldick
 %
 % Licensed under the Apache License, Version 2.0 (the "License");
 % you may not use this file except in compliance with the License.
@@ -188,4 +188,4 @@ end
 % distributed under the License is distributed on an "AS IS" BASIS,
 % WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 % See the License for the specific language governing permissions and limitations under the License.
-%----------------------------------------------------------------------END:license
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%license
