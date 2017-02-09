@@ -215,7 +215,7 @@ end
 		%
 		new = get(H.vSld(m),'Value');
 		if m==1
-			N = new;
+			N = round(new);
 		else
 			prm(m-1) = new;
 		end
