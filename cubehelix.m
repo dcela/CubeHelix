@@ -3,8 +3,6 @@ function [map,lo,hi] = cubehelix(N,start,rots,sat,gamma,irange,domain)
 %
 % (c) 2016 Stephen Cobeldick
 %
-%% Function %%
-%
 % Returns a colormap with colors defined by Dave Green's Cubehelix colorscheme.
 % The colormap nodes are selected along a tapered helix in the RGB color cube,
 % with a continuous increase in perceived intensity. Black-and-white printing
@@ -15,7 +13,7 @@ function [map,lo,hi] = cubehelix(N,start,rots,sat,gamma,irange,domain)
 %  <domain> subsamples a part of the helix, so the endnodes are color (not gray).
 % These options are both explained in the section below 'Range and Domain'.
 %
-% Syntax:
+%%% Syntax:
 %  map = cubehelix;
 %  map = cubehelix(N);
 %  map = cubehelix(N,start,rots,sat,gamma);
@@ -35,7 +33,7 @@ function [map,lo,hi] = cubehelix(N,start,rots,sat,gamma,irange,domain)
 %
 %% Range and Domain %%
 %
-% Using the default <irange> and <domain> vector ([0,1]) creates colormaps
+% Using the default <irange> and <domain> vectors ([0,1]) creates colormaps
 % exactly the same as Dave Green's original algorithm: from black to white.
 %
 % The option <irange> sets the intensity level of the colormap's endnodes:

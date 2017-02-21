@@ -12,7 +12,7 @@ function [map,prm] = cubehelix_view(N,start,rots,sat,gamma,irange,domain)
 % * Warning text if any RGB values are clipped.
 % * Warning text if the grayscale is not monotonic increasing/decreasing.
 %
-% Syntax:
+%%% Syntax:
 %  cubehelix_view
 %  cubehelix_view(N)
 %  cubehelix_view(N,start,rots,sat,gamma)
@@ -45,7 +45,7 @@ function [map,prm] = cubehelix_view(N,start,rots,sat,gamma,irange,domain)
 %
 %% Input and Output Arguments %%
 %
-%%% Inputs (*==default):
+%%% Inputs (*=default):
 %  N     = NumericScalar, an integer to define the colormap length.
 %        = *[], colormap length of one hundred and twenty-eight (128).
 %        = {axes/figure handles}, their colormaps will be updated by this function.
@@ -93,7 +93,7 @@ prm(2,1) = min(3,max(-3,log10(rem(T,1)/(1-rem(T,1))))); % rots
 prm(1,1) = rem(T,3); % start
 %
 % Cubehelix parameters consisting of fixed values (original "default"):
-%      [sta; rots; sat; gam; yrng; domn]
+%      [sta; rots; sat; gam; irng; domn]
 %prm = [0.5; -1.5;   1;   1; 0; 1; 0; 1];
 %
 stp = '%s input can be a vector of the four Cubehelix parameters.';
@@ -127,11 +127,11 @@ end
 %% Create Figure %%
 %
 % LHS and RHS slider bounds/limits, and slider step sizes:
-lbd = [  1, 0,-3, 0, 0, 0, 0, 0, 0].';
-rbd = [128, 3, 3, 3, 3, 1, 1, 1, 1].';
-stp = [  1,[5, 5, 5, 5, 1, 1, 1, 1]/100;... % minor
-        10,[5, 5, 5, 5, 1, 1, 1, 1]/10].';  % major
-%       [N,st,ro,sa,ga,i1,i2,d1,d2]
+lbd = [   1; 0;-3; 0; 0; 0; 0; 0; 0]; % left limit
+rbd = [ 128; 3; 3; 3; 3; 1; 1; 1; 1]; % right limit
+stp = [[100; 5; 5; 5; 5; 1; 1; 1; 1]/100,... % minor step
+       [100; 5; 5; 5; 5; 1; 1; 1; 1]/10];    % major step
+%     [   N;st;ro;sa;ga;i1;i2;d1;d2]
 %
 % Define the 3D cube axis order:
 xyz = 'RGB';

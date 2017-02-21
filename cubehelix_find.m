@@ -9,7 +9,7 @@ function [params,irange,domain,resnorm] = cubehelix_find(map,posn,prms)
 % help! An optimization routine finds the Cubehelix color scheme that best matches
 % the input RGB colormap, and returns its parameter values (takes a few seconds).
 %
-% Syntax:
+%%% Syntax:
 %  [params,irange,domain] = cubehelix_find(map)
 %  [params,irange,domain] = cubehelix_find(map,posn)
 %  [params,irange,domain] = cubehelix_find(map,posn,prms)
