@@ -1,7 +1,7 @@
 function [map,lo,hi] = cubehelix(N,start,rots,sat,gamma,irange,domain)
 % Generate an RGB colormap of Dave Green's Cubehelix colorscheme. With range and domain control.
 %
-% (c) 2016 Stephen Cobeldick
+% (c) 2017 Stephen Cobeldick
 %
 % Returns a colormap with colors defined by Dave Green's Cubehelix colorscheme.
 % The colormap nodes are selected along a tapered helix in the RGB color cube,
@@ -174,7 +174,7 @@ map = max(0,min(1,map));
 %
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%cubehelix
-% Copyright (c) 2016 Stephen Cobeldick
+% Copyright (c) 2017 Stephen Cobeldick
 %
 % Licensed under the Apache License, Version 2.0 (the "License");
 % you may not use this file except in compliance with the License.

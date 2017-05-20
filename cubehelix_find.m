@@ -1,7 +1,7 @@
 function [params,irange,domain,resnorm] = cubehelix_find(map,posn,prms)
 % Return parameter values for the Cubehelix color scheme that matches the input colormap.
 %
-% (c) 2016 Stephen Cobeldick
+% (c) 2017 Stephen Cobeldick
 %
 % So you have a nice Cubehelix colormap but you can't remember the exact
 % parameter values that were used to define it, or perhaps you want to match
@@ -179,7 +179,7 @@ q(idx) = p;
 q(~idx) = v(~idx);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%chfSubs
-% Copyright (c) 2016 Stephen Cobeldick
+% Copyright (c) 2017 Stephen Cobeldick
 %
 % Licensed under the Apache License, Version 2.0 (the "License");
 % you may not use this file except in compliance with the License.

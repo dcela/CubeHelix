@@ -1,7 +1,7 @@
 function [map,prm] = cubehelix_view(N,start,rots,sat,gamma,irange,domain)
 % An interactive figure for Cubehelix colormap parameter selection. With demo!
 %
-% (c) 2016 Stephen Cobeldick
+% (c) 2017 Stephen Cobeldick
 %
 % View Dave Green's Cubehelix colorschemes in a figure.
 %
@@ -35,8 +35,8 @@ function [map,prm] = cubehelix_view(N,start,rots,sat,gamma,irange,domain)
 %
 %%% Example:
 %
-% load spine
-% image(X)
+% S = load('spine');
+% image(S.X)
 % cubehelix_view({gca})
 %
 % Very useful! Simply provide a cell array of axes or figure handles when
@@ -141,8 +141,10 @@ if isempty(H) || ~ishghandle(H.fig)
 	% Create a new figure:
 	ClBk = struct(...
 		'chv2D3D',@chv2D3D, 'chvDemo',@chvDemo, 'chvSldr',@chvSldr);
-	H = chvPlot(N,prm, stp, lbd, rbd, xyz, ClBk);
+	H = chvPlot(ClBk, xyz, lbd, rbd, stp);
 end
+%
+set(H.vSld, {'Value'},num2cell(max(lbd,min(rbd,[N;prm]))));
 %
 chvUpDt()
 %
@@ -286,7 +288,7 @@ assert(isnumeric(x)&&isreal(x)&&all(isfinite(x))&&isvector(x)&&numel(x)==n,msg,o
 x = double(x(:));
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%chvChk
-function H = chvPlot(N,prm, stp, lbd, rbd, xyz, ClBk)
+function H = chvPlot(ClBk, xyz, lbd, rbd, stp)
 % Draw a new figure with RGBplot axes, colorbar axes, and uicontrol sliders.
 %
 % Parameter names for each slider:
@@ -339,7 +341,7 @@ H.D2D3 = uicontrol(H.fig, 'Style','togglebutton', 'Units','normalized',...
 	'Max',1, 'Min',0, 'Callback',ClBk.chv2D3D);
 %
 % Add colorbars:
-C = reshape([1,1,1],1,[],3);
+C(1,1,:) = [1,1,1];
 H.cbAx(2) = axes('Parent',H.fig, 'Visible','off', 'Units','normalized',...
 	'Position',[1-cbw/2,gap,cbw/2-gap,1-2*gap], 'YLim',[0.5,1.5], 'HitTest','off');
 H.cbAx(1) = axes('Parent',H.fig, 'Visible','off', 'Units','normalized',...
@@ -348,7 +350,7 @@ H.cbIm(2) = image('Parent',H.cbAx(2), 'CData',C);
 H.cbIm(1) = image('Parent',H.cbAx(1), 'CData',C);
 %
 % Add parameter sliders, listeners, and corresponding text:
-sv = max(lbd,min(rbd,[N;prm]));
+sv = mean([lbd,rbd],2);
 for m = M:-1:1
 	Y = gap+(M-m)*(slh+gap);
 	H.vLab(m) = uicontrol(H.fig,'Style','text', 'Units','normalized',...
@@ -361,10 +363,12 @@ for m = M:-1:1
 	addlistener(H.vSld(m), 'Value', 'PostSet',@(~,~)ClBk.chvSldr(m));
 end
 %
+drawnow()
+%
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%chvPlot
 %
-% Copyright (c) 2016 Stephen Cobeldick
+% Copyright (c) 2017 Stephen Cobeldick
 %
 % Licensed under the Apache License, Version 2.0 (the "License");
 % you may not use this file except in compliance with the License.
