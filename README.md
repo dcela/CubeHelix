@@ -1,3 +1,6 @@
+CubeHelix Colormaps
+===================
+
 This is the only colorscheme-generator you will ever need for MATLAB: Cubehelix are simply the best colormaps for published or distributed documents as they are very attractive in full color and yet are suitable for grayscale conversion. This submssion consists of an extremely versatile colormap generator and visualization tool.
 
 This submission allows you to create different colormaps using just a few parameters. The standard Cubehelix algorithm offer very attractive colorschemes for online and electronic documents (e.g. PDF), and yet when printed in grayscale they keep exactly the sequence information of the original data. This submission also includes two extra controls over the range and domain of the Cubehelix scheme, giving a practically unlimited number of colormaps with many different styles: maximally distinct, multi or single hue, suitable for grayscale printing or even simple grayscale.
@@ -59,9 +62,3 @@ Note: The original specification (the links above) misnamed the saturation optio
 	 vec = [2.3,0.4,0.5,0.6]
 	 irg = [0.05,0.24]
 	 dmn = [0.19,0.85]
-
-### Note ###
-
-The following files are part of GitHub/git repository, and are not required for using this submission in MATLAB:
-* .gitattributes
-* README.md
