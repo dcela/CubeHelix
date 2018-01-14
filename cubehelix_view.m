@@ -1,7 +1,7 @@
 function [map,prm] = cubehelix_view(N,start,rots,sat,gamma,irange,domain)
 % An interactive figure for Cubehelix colormap parameter selection. With demo!
 %
-% (c) 2017 Stephen Cobeldick
+% (c) 2013 Stephen Cobeldick
 %
 % View Dave Green's Cubehelix colorschemes in a figure.
 %
@@ -51,8 +51,8 @@ function [map,prm] = cubehelix_view(N,start,rots,sat,gamma,irange,domain)
 %        = {axes/figure handles}, their colormaps will be updated by this function.
 %  start = NumericScalar, the helix's start color, with R=1, G=2, B=3 (modulus 3).
 %  rots  = NumericScalar, the number of R->G->B rotations over the scheme length.
-%  sat   = NumericScalar, controls how saturated the colors are (saturation).
-%  gamma = NumericScalar, can be used to emphasize low or high intensity values.
+%  sat   = NumericScalar, saturation controls how saturated the colors are (saturation).
+%  gamma = NumericScalar, gamma can be used to emphasize low or high intensity values.
 %  irange = NumericVector, range of brightness levels of the colormap's endnodes. Size 1x2.
 %  domain = NumericVector, domain of the cubehelix calculation (endnode positions). Size 1x2.
 %
@@ -60,7 +60,7 @@ function [map,prm] = cubehelix_view(N,start,rots,sat,gamma,irange,domain)
 %  map = NumericMatrix, the cubehelix colormap defined when the figure is closed.
 %  prm = NumericVector, the parameters of <map>: [start,rots,sat,gamma,irange,domain].
 %
-% [map,prm] = cubehelix_view(N, start, rots, sat, gamma, *irange, *domain)
+% [map,prm] = cubehelix_view(N, start,rots,sat,gamma, *irange, *domain)
 % OR
 % [map,prm] = cubehelix_view(N, [start,rots,sat,gamma], *irange, *domain)
 
@@ -127,11 +127,12 @@ end
 %% Create Figure %%
 %
 % LHS and RHS slider bounds/limits, and slider step sizes:
-lbd = [   1; 0;-3; 0; 0; 0; 0; 0; 0]; % left limit
-rbd = [ 128; 3; 3; 3; 3; 1; 1; 1; 1]; % right limit
-stp = [[100; 5; 5; 5; 5; 1; 1; 1; 1]/100,... % minor step
-       [100; 5; 5; 5; 5; 1; 1; 1; 1]/10];    % major step
-%     [   N;st;ro;sa;ga;i1;i2;d1;d2]
+lbd = [  1; 0;-3; 0; 0; 0; 0; 0; 0]; % left limit
+rbd = [128; 3; 3; 3; 3; 1; 1; 1; 1]; % right limit
+mnr = [100; 5; 5; 5; 5; 1; 1; 1; 1]; % minor step
+mjr = [100; 5; 5; 5; 5; 1; 1; 1; 1]; % major step
+%     [  N;st;ro;sa;ga;i1;i2;d1;d2]
+stp = [mnr/100,mjr/10]; % [minor,major] step
 %
 % Define the 3D cube axis order:
 xyz = 'RGB';
@@ -139,8 +140,7 @@ xyz = 'RGB';
 %
 if isempty(H) || ~ishghandle(H.fig)
 	% Create a new figure:
-	ClBk = struct(...
-		'chv2D3D',@chv2D3D, 'chvDemo',@chvDemo, 'chvSldr',@chvSldr);
+	ClBk = struct('chv2D3D',@chv2D3D, 'chvDemo',@chvDemo, 'chvSldr',@chvSldr);
 	H = chvPlot(ClBk, xyz, lbd, rbd, stp);
 end
 %
@@ -161,7 +161,7 @@ end
 		%
 		% Get Cubehelix colormap and grayscale equivalent:
 		[map,lo,hi] = cubehelix(N, prm(1:4),prm(5:6),prm(7:8));
-		mag = sum(map*[0.298936;0.587043;0.114021],2);
+		mag = map*[0.298936;0.587043;0.114021];
 		%
 		% Update colorbar values:
 		set(H.cbAx, 'YLim',[0,abs(N)+(N==0)]+0.5);
@@ -306,7 +306,8 @@ slh = uih/M - gap; % slider height
 %
 H.fig = figure('HandleVisibility','callback', 'Color','white',...
 	'IntegerHandle','off', 'NumberTitle','off',...
-	'Name','Cubehelix Interactive Parameter Selector');
+	'Name','Cubehelix Interactive Parameter Selector',...
+	'MenuBar','figure', 'Toolbar','none', 'Tag',mfilename);
 %
 % Add 2D lineplot:
 H.ax2D = axes('Parent',H.fig, 'Position',[gap, uih+gap, axw, axh],...

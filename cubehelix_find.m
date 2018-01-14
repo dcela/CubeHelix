@@ -1,12 +1,12 @@
 function [params,irange,domain,resnorm] = cubehelix_find(map,posn,prms)
-% Return parameter values for the Cubehelix color scheme that matches the input colormap.
+% Return parameter values for the Cubehelix colorscheme that matches the input colormap.
 %
-% (c) 2017 Stephen Cobeldick
+% (c) 2013 Stephen Cobeldick
 %
 % So you have a nice Cubehelix colormap but you can't remember the exact
 % parameter values that were used to define it, or perhaps you want to match
-% a Cubehelix scheme to your document's chosen color scheme: this function can
-% help! An optimization routine finds the Cubehelix color scheme that best matches
+% a Cubehelix scheme to your document's chosen colorscheme: this function can
+% help! An optimization routine finds the Cubehelix colorscheme that best matches
 % the input RGB colormap, and returns its parameter values (takes a few seconds).
 %
 %%% Syntax:

@@ -1,7 +1,7 @@
 function [map,lo,hi] = cubehelix(N,start,rots,sat,gamma,irange,domain)
 % Generate an RGB colormap of Dave Green's Cubehelix colorscheme. With range and domain control.
 %
-% (c) 2017 Stephen Cobeldick
+% (c) 2013 Stephen Cobeldick
 %
 % Returns a colormap with colors defined by Dave Green's Cubehelix colorscheme.
 % The colormap nodes are selected along a tapered helix in the RGB color cube,
@@ -72,8 +72,8 @@ function [map,lo,hi] = cubehelix(N,start,rots,sat,gamma,irange,domain)
 %        = *[], uses the length of the current figure's colormap.
 %  start = NumericScalar, *0.5, the helix's start color (modulus 3): R=1, G=2, B=3.
 %  rots  = NumericScalar, *-1.5, the number of R->G->B rotations over the scheme length.
-%  sat   = NumericScalar, *1,    controls how saturated the colors are.
-%  gamma = NumericScalar, *1,    can be used to emphasize low or high intensity values.
+%  sat   = NumericScalar, *1, the saturation controls how saturated the colors are.
+%  gamma = NumericScalar, *1, change the gamma to emphasize low or high intensity values.
 %  irange = NumericVector, *[0,1], range of brightness levels of the scheme's endnodes. Size 1x2.
 %  domain = NumericVector, *[0,1], domain of the Cubehelix calculation (endnode positions). Size 1x2.
 %
