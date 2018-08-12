@@ -1,14 +1,14 @@
 function [map,lo,hi] = cubehelix(N,start,rots,sat,gamma,irange,domain)
-% Generate an RGB colormap of Dave Green's Cubehelix colorscheme. With range and domain control.
+% Generate an RGB colormap of Dave Green's CubeHelix colorscheme. With range and domain control.
 %
 % (c) 2013 Stephen Cobeldick
 %
-% Returns a colormap with colors defined by Dave Green's Cubehelix colorscheme.
+% Returns a colormap with colors defined by Dave Green's CubeHelix colorscheme.
 % The colormap nodes are selected along a tapered helix in the RGB color cube,
 % with a continuous increase in perceived intensity. Black-and-white printing
 % using postscript results in a monotonically increasing grayscale colorscheme.
 %
-% This function offers two extra controls over the Cubehelix colorscheme:
+% This function offers two extra controls over the CubeHelix colorscheme:
 %  <irange> specifies the intensity levels of the colormap's endnodes (lightness).
 %  <domain> subsamples a part of the helix, so the endnodes are color (not gray).
 % These options are both explained in the section below 'Range and Domain'.
@@ -23,7 +23,7 @@ function [map,lo,hi] = cubehelix(N,start,rots,sat,gamma,irange,domain)
 %  map = cubehelix([],...)
 % [map,lo,hi] = cubehelix(...)
 %
-% Cubehelix is defined here: http://astron-soc.in/bulletin/11June/289392011.pdf
+% CubeHelix is defined here: http://astron-soc.in/bulletin/11June/289392011.pdf
 % For more information and examples: http://www.mrao.cam.ac.uk/~dag/CUBEHELIX/
 %
 % Note: The original specification (the links above) misnamed the saturation
@@ -42,7 +42,7 @@ function [map,lo,hi] = cubehelix(N,start,rots,sat,gamma,irange,domain)
 %        0.62751      0.47498      0.28642
 %        0.8          0.8          0.8     % <- gray, not white
 %
-% The option <domain> sets the sampling window for the Cubehelix, such
+% The option <domain> sets the sampling window for the CubeHelix, such
 % that the tapered-helix does not taper all the way to unsaturated (gray).
 % This allows the colormap to end with colors rather than gray shades:
 %  cubehelix(3, [0.5,-1.5,1,1], [0.2,0.8], [0.3,0.7]) % domain=[0.3,0.7]
@@ -62,20 +62,20 @@ function [map,lo,hi] = cubehelix(N,start,rots,sat,gamma,irange,domain)
 %%% New colors for the SURF example:
 % [X,Y,Z] = peaks(30);
 % surfc(X,Y,Z)
-% colormap(cubehelix([],0.7,-0.7,2,1,[0.2,0.8],[0.4,0.8]))
+% colormap(cubehelix([],0.7,-0.7,2,1,[0.1,0.9],[0.1,0.9]))
 % axis([-3,3,-3,3,-10,5])
 %
 %% Input and Output Arguments %%
 %
 %%% Inputs (*=default):
-%  N     = NumericScalar, an integer to define the colormap length.
-%        = *[], uses the length of the current figure's colormap.
+%  N     = NumericScalar, an integer to specify the colormap length.
+%        = *[], same length as the current figure's colormap (see COLORMAP).
 %  start = NumericScalar, *0.5, the helix's start color (modulus 3): R=1, G=2, B=3.
 %  rots  = NumericScalar, *-1.5, the number of R->G->B rotations over the scheme length.
 %  sat   = NumericScalar, *1, the saturation controls how saturated the colors are.
 %  gamma = NumericScalar, *1, change the gamma to emphasize low or high intensity values.
 %  irange = NumericVector, *[0,1], range of brightness levels of the scheme's endnodes. Size 1x2.
-%  domain = NumericVector, *[0,1], domain of the Cubehelix calculation (endnode positions). Size 1x2.
+%  domain = NumericVector, *[0,1], domain of the CubeHelix calculation (endnode positions). Size 1x2.
 %
 %%% Outputs:
 %  map = NumericMatrix, a colormap of RGB values between 0 and 1. Size Nx3
@@ -83,7 +83,7 @@ function [map,lo,hi] = cubehelix(N,start,rots,sat,gamma,irange,domain)
 %  hi  = LogicalMatrix, true where <map> values>1 were clipped to 1. Size Nx3
 %
 % [map,lo,hi] = cubehelix(N, start,rots,sat,gamma, irange, domain)
-% OR
+% OR with the first four parameters in one vector:
 % [map,lo,hi] = cubehelix(N, [start,rots,sat,gamma], irange, domain)
 
 %% Input Wrangling %%
@@ -92,7 +92,8 @@ if nargin==0 || (isnumeric(N)&&isempty(N))
 	N = size(get(gcf,'colormap'),1);
 else
 	assert(isnumeric(N)&&isscalar(N),'First input <N> must be a scalar numeric.')
-	assert(isreal(N)&&isfinite(N)&&fix(N)==N,'First input <N> must be real and whole: %g+%gi',N,imag(N))
+	assert(isreal(N),'First input <N> must be a real numeric: %g+%gi',N,imag(N))
+	assert(fix(N)==N&&N>0,'First input <N> must be positive integer: %g',N)
 	N = double(N);
 end
 %

@@ -1,12 +1,12 @@
 function [params,irange,domain,resnorm] = cubehelix_find(map,posn,prms)
-% Return parameter values for the Cubehelix colorscheme that matches the input colormap.
+% Return parameter values for the CubeHelix colorscheme that matches the input colormap.
 %
 % (c) 2013 Stephen Cobeldick
 %
-% So you have a nice Cubehelix colormap but you can't remember the exact
+% So you have a nice CubeHelix colormap but you can't remember the exact
 % parameter values that were used to define it, or perhaps you want to match
-% a Cubehelix scheme to your document's chosen colorscheme: this function can
-% help! An optimization routine finds the Cubehelix colorscheme that best matches
+% a CubeHelix scheme to your document's chosen colorscheme: this function can
+% help! An optimization routine finds the CubeHelix colorscheme that best matches
 % the input RGB colormap, and returns its parameter values (takes a few seconds).
 %
 %%% Syntax:
@@ -22,13 +22,13 @@ function [params,irange,domain,resnorm] = cubehelix_find(map,posn,prms)
 %
 %% Matching a Colorscheme %%
 %
-% The basic syntax assumes that the input colormap is a Cubehelix colormap:
+% The basic syntax assumes that the input colormap is a CubeHelix colormap:
 %  [params,irange,domain] = cubehelix_find(map) % map = cubehelix(...)
 %
-% You can also find the closest Cubehelix colorscheme that matches a
+% You can also find the closest CubeHelix colorscheme that matches a
 % colormap of arbitrary colors (e.g. a corporate or document colorscheme).
 % This can be achieved by supplying a colormap of the desired colors, and a
-% vector giving their relative positions in the final Cubehelix colorscheme:
+% vector giving their relative positions in the final CubeHelix colorscheme:
 %
 % map  = [0.16,0.59,0.87; 0.78,0.55,0.35; 0.78,0.9,0.9]; % three nodes
 % posn = [0.25,0.5,0.75]; % relative positions of the three <map> nodes
@@ -65,12 +65,12 @@ function [params,irange,domain,resnorm] = cubehelix_find(map,posn,prms)
 %% Input and Output Arguments %%
 %
 %%% Inputs (*=default):
-%  map  = NumericMatrix, an RGB colormap to be matched to a Cubehelix colorscheme.
+%  map  = NumericMatrix, an RGB colormap to be matched to a CubeHelix colorscheme.
 %  posn = NumericVector, the relative positions of the nodes in <map>. Size 1xrows(map).
-%  prms = NumericVector, vector of Cubehelix parameters to keep constant:
+%  prms = NumericVector, vector of CubeHelix parameters to keep constant:
 %         =[start,rots,sat,gamma,irange,domain]. NaN indicates non-constant values.
 %%% Outputs:
-%  params = NumericVector, the Cubehelix parameters derived from <map>: [start,rots,sat,gamma].
+%  params = NumericVector, the CubeHelix parameters derived from <map>: [start,rots,sat,gamma].
 %  irange = NumericVector, range of brightness levels of the scheme's endnodes. Size 1x2.
 %  domain = NumericVector, domain of the cubehelix calculation (endnode positions). Size 1x2.
 %
@@ -127,7 +127,7 @@ if nargin>1 && ~isempty(posn) % sampled colors
 	P = prod(D);
 	Y = N.*(P./D);
 	E = @(m)m(Y,:);
-else % complete Cubehelix colormap
+else % complete CubeHelix colormap
 	P = R;
 	E = @(m)m;
 end
